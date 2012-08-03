@@ -1,0 +1,43 @@
+		German Political Speeches Corpus Builder v1.0
+		http://code.google.com/p/gps-corpus-builder/
+
+
+=== LICENSE ===
+
+This software is brought to you by Adrien Barbaresi (adrien.barbaresi@gmail.com).
+It is freely available under the GNU GPL v3 license (http://www.gnu.org/licenses/gpl.html).
+
+According to the German law § 48 UrhG (http://bundesrecht.juris.de/urhg/__48.html), the texts can be freely republished. However, the texts published on the governmental websites may be subject to other copyright issues.
+
+
+=== DESCRIPTION ===
+
+Tools to crawl German official speeches repositories in order to gather a corpus.
+
+A complete version of the corpus including a visualization tool is available here : http://purl.org/corpus/german-speeches
+
+Starting from the front page, the crawler retrieves a list of links. Then, the corpus builder explores it, stripping the text of each speech out of the HTML formatting and saving it into an XML file containing the metadata that could be extracted (e.g. the speaker, the date or the place) and raw text. Due to its specialization this tool is able to build a reliable corpus.
+
+The scripts do not support multi-threading as this may not be considered a fair use, they take the links one by one and are not set up for speed.
+
+
+=== FILES ===
+
+There are 3 different subcorpora :
+	1. Chancellery (BK subdirectory)
+	2. Presidency (BR subdirectory)
+	3. Ministry of Foreign Affairs (AA subdirectory)
+
+Each time, there are 3 different scripts (where XX is the codename of the subcorpus) :
+	⋅ XX_build-xml.pl	[the corpus builder itself]
+	⋅ XX_list-new.pl	[to check for new speeches]
+	⋅ XX_make-list.pl	[to make a list of all available speeches]
+
+
+=== USAGE ===
+
+  1. Run the 'make-list' script.
+  2. Run the corpus builder.
+  3. Check periodically for new links and decide if you take action.
+
+Repeat the procedure for each subcorpus you would like to gather.

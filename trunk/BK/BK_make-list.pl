@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 
-###	This script is part of the German political speeches corpus builder (http://code.google.com/p/gps-corpus-builder/).
+###	This script is part of the German political speeches corpus builder v1.0 (http://code.google.com/p/gps-corpus-builder/).
 ###	It is brought to you by Adrien Barbaresi.
 ###	It is freely available under the GNU GPL v3 license (http://www.gnu.org/licenses/gpl.html).
 
@@ -15,10 +15,10 @@
 use strict;
 use warnings;
 use LWP::Simple;
-use List::MoreUtils qw(uniq);
+use open ':encoding(utf8)';
 
 
-my ($url, @url, $seite, $n, $q, $a, $link, @links, @temp, $line, @unique, $j);
+my (@url, $seite, $n, $q, $a, $link, @links, @temp, $j, %seen);
 
 
 ### Process all the archive pages of the Chancellor's website
@@ -47,8 +47,9 @@ foreach $a (@url) {
 	}
 }
 
-@unique = uniq @links;
-print "Total links: " , scalar(@unique) , "\n";
+%seen = ();
+@links = grep { ! $seen{ $_ }++ } @links;
+print "Total links: " , scalar(@links) , "\n";
 
 
 ### Write the links that are not in the stoplist (e.g. speeches in English) to a file
@@ -65,7 +66,7 @@ if (-e $stoplist) {
 my $links = 'BK_list-all';
 open( LINKS, ">", $links ) || die "Can't open $links: $!";
 $a = 0;
-foreach $n (@unique) {
+foreach $n (@links) {
 	unless ($n ~~ @stoplist) {
 		print LINKS "$n\n";
 		$a++;

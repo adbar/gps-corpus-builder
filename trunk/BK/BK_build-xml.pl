@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 
-###	This script is part of the German political speeches corpus builder (http://code.google.com/p/gps-corpus-builder/).
+###	This script is part of the German political speeches corpus builder v1.0 (http://code.google.com/p/gps-corpus-builder/).
 ###	It is brought to you by Adrien Barbaresi.
 ###	It is freely available under the GNU GPL v3 license (http://www.gnu.org/licenses/gpl.html).
 
@@ -136,10 +136,6 @@ push (@text, $url);
 @temp = split ("<div class=\"text\">", $seite);
 $block = $temp[1];
 
-#$block =~ s/<div class="gallery-switcher">.+?<div class="gallery-pagination">//gs;
-#$block =~ s/<li class="pa.+?<\/li>//gs;
-#$block =~ s/Kein Flash-Plugin vorhanden//;
-
 
 ### Extract the addresses (not always efficient) ##### ROAD WORKS !!! does not function properly
 
@@ -151,39 +147,6 @@ elsif ($block =~ m/Anrede(|n)(,|!)/) {
 	$anrede = $&;
 	$block =~ s/$anrede//;
 }
-#else {
-#if ($block =~ m/(Verehrter|(S|s)ehr|Herr|(L|l)iebe(|r)|(M|m)eine).+?(Herren|Festversammlung|träger|(G|g)äste|nrw|parlament|Bundestages|Kollegen|Anwesende)(,|!)/s)
-#{
-#$q = $&;
-#if (length($q) < 200) {
-#	$block =~ m/(Verehrter|(S|s)ehr|Herr|(L|l)iebe(|r)|(M|m)eine).+?(Herren|Festversammlung|träger|(G|g)äste|nrw|parlament|Bundestages|Kollegen|Anwesende)(,|!)/s;
-#	$anrede = $&;
-#	$anrede =~ s/<.+?>//gs;
-#	$anrede =~ s/span>//;
-#	$block =~ s/(Verehrter|(S|s)ehr|Herr|(L|l)iebe(|r)|(M|m)eine).+?(Herren|Festversammlung|träger|(G|g)äste|nrw|parlament|Bundestages|Kollegen|Anwesende)(,|!)//s;
-#	if ($block =~ m/((S|s)ehr|Herr|(L|l)iebe(|r)|(M|m)eine).+?(Festversammlung|träger|(G|g)äste|nrw|parlament|Bundestages|Kollegen)(,|!)/s) {
-#	$q = $&;
-#	if (length($q) < 200) {
-#	$q =~ s/<.+?>//gs;
-#	$q =~ s/span>//;
-#	$anrede = $anrede . "\n$q";
-#	$block =~ s/((S|s)ehr|Herr|(L|l)iebe(|r)|(M|m)eine).+?(Festversammlung|träger|(G|g)äste|nrw|parlament|Bundestages|Kollegen)(,|!)//s;
-#	}
-#	}
-#	if ($block =~ m/meine (sehr geehrten|) Damen und Herren,/) {
-#	$anrede = $anrede . "\n$&";
-#	$block =~ s/meine (sehr geehrten|) Damen und Herren,//;
-#	}
-#}
-#else {
-#$anrede = "";
-#}
-#}
-#else {
-#$anrede = "";
-#}
-#}
-
 else {
 	$anrpat = "(Verehrter|(S|s)ehr|Herr|(L|l)iebe(|r)|(M|m)eine)( sehr|)( geehrt|).+?(Herren|Festversammlung|träger|(G|g)äste|nrw|parlament|Bundestages|Kollegen|Anwesende|Freunde|Professor)[A-ZÄÖÜa-zäöü ]*?(,|!|)";
 	$muster = "((M|m)eine |(S|s)ehr |((V|v)er|(G|g)e)ehrte(n|) )(((S|s)ehr |)((V|v)er|(G|g)e)ehrte(n|)|) ?(Damen und Herren|Gäste|Freunde)(,|!|)";
@@ -232,21 +195,11 @@ push (@text, $anrede);
 
 push (@text, "<rohtext>\n");
 
-#@temp = split ("<p>", $block);
-#@temp = splice (@temp, 0, 1); 
-#$block = join("", @temp);
-
 ## Text cleaning
 $block =~ s/-* ?(E|e)s gilt das gesprochene Wort\.? ?!?-*//;
 $block =~ s/(Änderungen vorbehalten. )?Es gilt das gesprochene Wort.//;
 $block =~ s/\(.+?\)//g;
-#$block =~ s/<em>Fotos von der Konferenz finden Sie in derBildergalerie<\/em>\.//;
 #$block =~ s/Redemanuskript!//;
-
-
-#$block =~ s/^([a-z])/\U\1/;
-#$block =~ s/<span class="Verfgung">//g;
-#$block =~ s/<span.+?<\/span>//g;
 
 $block = normalize($block);
 $block = xmlize($block);
