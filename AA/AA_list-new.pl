@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 
-###	This script is part of the German political speeches corpus builder (http://code.google.com/p/gps-corpus-builder/).
+###	This script is part of the German political speeches corpus builder v1.0 (http://code.google.com/p/gps-corpus-builder/).
 ###	It is brought to you by Adrien Barbaresi.
 ###	It is freely available under the GNU GPL v3 license (http://www.gnu.org/licenses/gpl.html).
 
@@ -18,7 +18,7 @@ use LWP::Simple;
 use open ':encoding(utf8)';
 
 
-my ($url, @url, $seite, $n, $q, $a, $link, @links, @temp, @done, $line, $j, %liste, %seen);
+my (@url, $seite, $n, $q, $a, $link, @links, @temp, $j, %liste, %seen);
 
 
 ### If it exists, read a list of already stored links
