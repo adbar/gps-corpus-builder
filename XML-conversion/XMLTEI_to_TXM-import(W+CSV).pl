@@ -2,13 +2,13 @@
 
 
 ###	This script is part of the German political speeches corpus builder v1.0 (http://code.google.com/p/gps-corpus-builder/).
-###	It is brought to you by Adrien Barbaresi.
+###	Copyright (C) Adrien Barbaresi, 2013.
 ###	It is freely available under the GNU GPL v3 license (http://www.gnu.org/licenses/gpl.html).
 
 
 # Function : process the XML TEI corpus file, cut the documents and metadata and save them in a subfolder in order to be able to import them in the textometry software TXM (http://textometrie.ens-lyon.fr/?lang=en).
 
-# Use : without arguments.
+# Use : without arguments. Expects a subfolder named Bundespräsidenten (or Bundesregierung).
 
 
 use strict;
@@ -128,10 +128,12 @@ sub dexmlizeheader {
 
 sub dexmlize {
 	my $string = shift;
-	$string =~ s/&amp;quot;/"/g;
-	$string =~ s/&quot;/"/g;
-	$string =~ s/&rsquo;/"/g;
-	$string =~ s/&apos;/'/g;
-	$string =~ s/&amp;/&/g;
+	unless ($string =~ m/type="\$\("/) {
+		$string =~ s/&amp;quot;/"/g;
+		$string =~ s/&quot;/"/g;
+		$string =~ s/&rsquo;/"/g;
+		$string =~ s/&apos;/'/g;
+		$string =~ s/&amp;/&/g;
+	}
 	return $string;
 }
