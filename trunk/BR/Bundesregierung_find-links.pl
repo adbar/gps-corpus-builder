@@ -1,15 +1,32 @@
 #!/usr/bin/perl
+
+
+###	This script is part of the German political speeches corpus builder v1.1 (http://code.google.com/p/gps-corpus-builder/).
+###	Copyright (C) Adrien Barbaresi, 2013.
+###	This is open source software, freely available under the GNU GPL v3 license (http://www.gnu.org/licenses/gpl.html).
+
+## BR subpart: Bundesregierung (Chancellor and a few ministers)
+
+# Function: Go through all the available archive pages between certain dates to gather links.
+# Use: perl Bundesregierung_find-links.pl --begin 01.01.2012 --end 01.01.2013 --verbose
+
+
 use strict;
 use warnings;
 use Getopt::Long;
-use LWP::Simple;
+use LWP::UserAgent;
 use open ':encoding(utf8)';
 
 
 ## Variables
 my (@urls, %liste, %seen);
 my $counter = 0;
-my ($help, $begin, $end, $existing_file, $verbose);
+my ($help, $begin, $end, $existing_file, $verbose, $page);
+
+## User Agent
+my $lwp_ua = LWP::UserAgent->new;
+$lwp_ua->agent("GPS-corpus-builder/1.1 +https://code.google.com/p/gps-corpus-builder/");
+$lwp_ua->timeout(12);
 
 
 ### Parse args
@@ -44,7 +61,15 @@ if (defined $existing_file) {
 ## Fetch the first page
 my $query = "dateOfIssue_startDate=" . $begin . "&path=%2FBPAInternet%2FContent%2FDE%2FRede*&docType=Speech&dateOfIssue_stopDate=" . $end;
 print "Initiating query from " . $begin . " to " . $end . "\n";
-my $page = get ("http://www.bundesregierung.de/SiteGlobals/Forms/Webs/Breg/Suche/DE/Nachrichten/Redensuche_formular.html?" . $query);
+
+my $response = $lwp_ua->get("http://www.bundesregierung.de/SiteGlobals/Forms/Webs/Breg/Suche/DE/Nachrichten/Redensuche_formular.html?" . $query);
+if ($response->is_success) {
+    $page = $response->decoded_content;
+}
+else {
+    die "Problem during fetching of first query, aborting.";
+}
+
 if (defined $verbose) {
     print length($page) . "\n";
 }
@@ -70,11 +95,17 @@ while ($loop_control == 1) {
         # sanitize
         $next =~ s/&amp;/&/g; 
         # sleep (important)
-        sleep(5);
+        sleep(10);
         if (defined $verbose) {
             print "fetching: " . $next . "\n";
         }
-        $page = get ("http://www.bundesregierung.de/" . $next);
+        my $response = $lwp_ua->get("http://www.bundesregierung.de/" . $next);
+        if ($response->is_success) {
+            $page = $response->decoded_content;
+        }
+        else {
+            print "This page could not be fetched: " . "http://www.bundesregierung.de/" . $next . "\n";
+        }
         # output stats
         if ($next =~ m/queryResultId=([0-9]+)&.+?pageNo=([0-9]+)/) {
             print "page number: " . $2 . "\tquery id: " . $1 . "\n";
@@ -120,7 +151,7 @@ sub extract {
 @urls = grep { ! $seen{ $_ }++ } @urls;
 print scalar(@urls) . " URLs found.\n";
 
-my $output = 'Bundesregierung_new-links'; #.txt ?
+my $output = "Bundesregierung_new-links"; #.txt ?
 open (my $output_fh, ">>", $output) or die "Can't open $output: $!";
 foreach my $url (@urls) {
     print $output_fh "$url\n";
